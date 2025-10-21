@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Database Ristoranti</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 12px;
+    }
+    input, select, button {
+      width: 100%;
+      margin: 8px 0;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover { background-color: #45a049; }
+  </style>
+</head>
+<body>
+  <h2>Inserisci un nuovo ristorante</h2>
+  
+  <form id="formRistorante">
+    <input type="text" id="nome" placeholder="Nome" required>
+    <input type="text" id="indirizzo" placeholder="Indirizzo" required>
+    <input type="text" id="zona" placeholder="Zona" required>
+    <input type="text" id="cucina" placeholder="Cucina" required>
+    <select id="fascia" required>
+      <option value="">Fascia di prezzo</option>
+      <option>Economico</option>
+      <option>Medio</option>
+      <option>Costoso</option>
+    </select>
+    <input type="number" id="tripadvisor" placeholder="Voto Tripadvisor (1-5)" min="1" max="5" required>
+    <input type="number" id="votoA" placeholder="Voto Alessandro (1-5)" min="1" max="5">
+    <input type="number" id="votoF" placeholder="Voto Francesca (1-5)" min="1" max="5">
+    <input type="number" id="votoG" placeholder="Voto Giacomo (1-5)" min="1" max="5">
+    <input type="number" id="votoL" placeholder="Voto Lucia (1-5)" min="1" max="5">
+    <button type="submit">Salva</button>
+  </form>
+
+  <p id="msg"></p>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec";
+
+    document.getElementById("formRistorante").addEventListener("submit", e => {
+      e.preventDefault();
+      
+      const data = {
+        nome: document.getElementById("nome").value,
+        indirizzo: document.getElementById("indirizzo").value,
+        zona: document.getElementById("zona").value,
+        fascia: document.getElementById("fascia").value,
+        tripadvisor: document.getElementById("tripadvisor").value,
+        votoA: document.getElementById("votoA").value,
+        votoB: document.getElementById("votoF").value,
+        votoC: document.getElementById("votoG").value,
+        votoD: document.getElementById("votoL").value,
+      };
+
+      fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        document.getElementById("msg").textContent = "✅ Dati salvati con successo!";
+        document.getElementById("formRistorante").reset();
+      })
+      .catch(err => {
+        document.getElementById("msg").textContent = "❌ Errore: " + err;
+      });
+    });
+  </script>
+</body>
+</html>
