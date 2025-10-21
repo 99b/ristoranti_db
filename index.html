@@ -33,16 +33,16 @@
   
   <form id="formRistorante">
     <input type="text" id="nome" placeholder="Nome" required>
-    <input type="text" id="indirizzo" placeholder="Indirizzo" required>
-    <input type="text" id="zona" placeholder="Zona" required>
-    <input type="text" id="cucina" placeholder="Cucina" required>
-    <select id="fascia" required>
+    <input type="text" id="indirizzo" placeholder="Indirizzo">
+    <input type="text" id="zona" placeholder="Zona">
+    <input type="text" id="cucina" placeholder="Cucina">
+    <select id="fascia">
       <option value="">Fascia di prezzo</option>
       <option>Economico</option>
       <option>Medio</option>
       <option>Costoso</option>
     </select>
-    <input type="number" id="tripadvisor" placeholder="Voto Tripadvisor (1-5)" min="1" max="5" required>
+    <input type="number" id="tripadvisor" placeholder="Voto Tripadvisor (1-5)" min="1" max="5">
     <input type="number" id="votoA" placeholder="Voto Alessandro (1-5)" min="1" max="5">
     <input type="number" id="votoF" placeholder="Voto Francesca (1-5)" min="1" max="5">
     <input type="number" id="votoG" placeholder="Voto Giacomo (1-5)" min="1" max="5">
@@ -62,6 +62,7 @@
         nome: document.getElementById("nome").value,
         indirizzo: document.getElementById("indirizzo").value,
         zona: document.getElementById("zona").value,
+        cucina: document.getElementById("cucina").value,
         fascia: document.getElementById("fascia").value,
         tripadvisor: document.getElementById("tripadvisor").value,
         votoA: document.getElementById("votoA").value,
