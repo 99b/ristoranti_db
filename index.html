@@ -8,56 +8,124 @@
       font-family: Arial, sans-serif;
       max-width: 600px;
       margin: 40px auto;
-      background: #f5f5f5;
+      background: #f8f9fa;
       padding: 20px;
       border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     input, select, button {
       width: 100%;
       margin: 8px 0;
-      padding: 8px;
+      padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      font-size: 14px;
     }
     button {
       background-color: #4CAF50;
       color: white;
       border: none;
       cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
     }
     button:hover { background-color: #45a049; }
+    h2 { text-align: center; }
+    #msg { text-align: center; font-weight: bold; margin-top: 10px; }
   </style>
 </head>
 <body>
-  <h2>Inserisci un nuovo ristorante</h2>
+  <h2>Gestione Ristoranti</h2>
   
   <form id="formRistorante">
-    <input type="text" id="nome" placeholder="Nome" required>
+    <label for="nome">Nome ristorante</label>
+    <input list="nomiRistoranti" id="nome" placeholder="Scrivi o seleziona un nome" required>
+    <datalist id="nomiRistoranti"></datalist>
+
+    <label>Indirizzo</label>
     <input type="text" id="indirizzo" placeholder="Indirizzo">
+
+    <label>Zona</label>
     <input type="text" id="zona" placeholder="Zona">
+    
+    <label>Cucina</label>
     <input type="text" id="cucina" placeholder="Cucina">
+
+    <label>Fascia di prezzo</label>
     <select id="fascia">
-      <option value="">Fascia di prezzo</option>
+      <option value="">-- Seleziona --</option>
       <option>Economico</option>
       <option>Medio</option>
       <option>Costoso</option>
     </select>
-    <input type="number" id="tripadvisor" placeholder="Voto Tripadvisor (1-5)" min="1" max="5">
-    <input type="number" id="votoA" placeholder="Voto Alessandro (1-5)" min="1" max="5">
-    <input type="number" id="votoF" placeholder="Voto Francesca (1-5)" min="1" max="5">
-    <input type="number" id="votoG" placeholder="Voto Giacomo (1-5)" min="1" max="5">
-    <input type="number" id="votoL" placeholder="Voto Lucia (1-5)" min="1" max="5">
-    <button type="submit">Salva</button>
+
+    <label>Voto Tripadvisor</label>
+    <input type="number" id="tripadvisor" min="1" max="5" placeholder="(1-5)">
+
+    <label>Voto Alessandro</label>
+    <input type="number" id="votoA" min="1" max="5">
+
+    <label>Voto Francesca</label>
+    <input type="number" id="votoF" min="1" max="5">
+
+    <label>Voto Giacomo</label>
+    <input type="number" id="votoG" min="1" max="5">
+
+    <label>Voto Lucia</label>
+    <input type="number" id="votoL" min="1" max="5">
+
+    <button type="submit">💾 Salva / Aggiorna</button>
   </form>
 
   <p id="msg"></p>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 sostituisci con il TUO URL
 
-    document.getElementById("formRistorante").addEventListener("submit", e => {
+    let ristoranti = [];
+
+    // 🔹 Carica tutti i dati dal foglio
+    async function caricaDati() {
+      try {
+        const res = await fetch(scriptURL);
+        ristoranti = await res.json();
+        const datalist = document.getElementById("nomiRistoranti");
+        datalist.innerHTML = "";
+        ristoranti.forEach(r => {
+          const opt = document.createElement("option");
+          opt.value = r["Nome"];
+          datalist.appendChild(opt);
+        });
+      } catch (err) {
+        console.error("Errore caricando i dati:", err);
+      }
+    }
+
+    // 🔹 Quando l’utente sceglie un nome, riempi i campi
+    document.getElementById("nome").addEventListener("input", e => {
+      const nome = e.target.value.trim().toLowerCase();
+      const ristorante = ristoranti.find(r => r["Nome"].toString().trim().toLowerCase() === nome);
+      if (ristorante) {
+        document.getElementById("indirizzo").value = ristorante["Indirizzo"] || "";
+        document.getElementById("zona").value = ristorante["Zona"] || "";
+        document.getElementById("cucina").value = ristorante["Cucina"] || "";
+        document.getElementById("fascia").value = ristorante["Fascia di prezzo"] || "";
+        document.getElementById("tripadvisor").value = ristorante["Voto Tripadvisor"] || "";
+        document.getElementById("votoA").value = ristorante["Voto A"] || "";
+        document.getElementById("votoF").value = ristorante["Voto F"] || "";
+        document.getElementById("votoG").value = ristorante["Voto G"] || "";
+        document.getElementById("votoL").value = ristorante["Voto L"] || "";
+      } else {
+        // Se è un nuovo nome, svuota tutti i campi
+        document.querySelectorAll("#formRistorante input, #formRistorante select").forEach(el => {
+          if (el.id !== "nome") el.value = "";
+        });
+      }
+    });
+
+    // 🔹 Quando il form viene inviato
+    document.getElementById("formRistorante").addEventListener("submit", async e => {
       e.preventDefault();
-      
       const data = {
         nome: document.getElementById("nome").value,
         indirizzo: document.getElementById("indirizzo").value,
@@ -66,24 +134,26 @@
         fascia: document.getElementById("fascia").value,
         tripadvisor: document.getElementById("tripadvisor").value,
         votoA: document.getElementById("votoA").value,
-        votoF: document.getElementById("votoF").value,
-        votoG: document.getElementById("votoG").value,
-        votoL: document.getElementById("votoL").value,
+        votoB: document.getElementById("votoF").value,
+        votoC: document.getElementById("votoG").value,
+        votoD: document.getElementById("votoL").value
       };
 
-      fetch(scriptURL, {
-        method: "POST",
-        mode: "no-cors",
-        body: JSON.stringify(data)
-      })
-      .then(() => {
+      try {
+        await fetch(scriptURL, {
+          method: "POST",
+          mode: "no-cors",
+          body: JSON.stringify(data)
+        });
         document.getElementById("msg").textContent = "✅ Dati salvati con successo!";
-        document.getElementById("formRistorante").reset();
-      })
-      .catch(err => {
+        await caricaDati(); // ricarica i nomi aggiornati
+      } catch (err) {
         document.getElementById("msg").textContent = "❌ Errore: " + err;
-      });
+      }
     });
+
+    // Carica i dati all’avvio
+    caricaDati();
   </script>
 </body>
 </html>
