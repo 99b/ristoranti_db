@@ -71,19 +71,19 @@
     </select>
 
     <label>Tripadvisor</label>
-    <input type="number" id="tripadvisor" min="1" max="5" placeholder="(1-5)">
+    <input type="number" step="0.01" id="tripadvisor" min="1" max="5" placeholder="(1-5)">
 
     <label>Voto Alessandro</label>
-    <input type="number" id="votoA" min="1" max="10">
+    <input type="number" step="0.01" id="votoA" min="1.00" max="5.00">
 
     <label>Voto Francesca</label>
-    <input type="number" id="votoF" min="1" max="10">
+    <input type="number" step="0.01" id="votoF" min="1.00" max="5.00">
 
     <label>Voto Giacomo</label>
-    <input type="number" id="votoG" min="1" max="10">
+    <input type="number" step="0.01" id="votoG" min="1.00" max="5.00">
 
     <label>Voto Lucia</label>
-    <input type="number" id="votoL" min="1" max="10">
+    <input type="number" step="0.01" id="votoL" min="1.00" max="5.00">
 
     <button type="submit">💾 Salva / Aggiorna</button>
   </form>
@@ -93,7 +93,7 @@
   <a href="tabella.html">📊 Vai alla tabella ristoranti</a>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/IL_TUO_URL/exec"; // 👈 Sostituisci
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 Sostituisci
 
     let ristoranti = [];
 
@@ -161,3 +161,4 @@
   </script>
 </body>
 </html>
+
