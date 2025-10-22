@@ -25,14 +25,14 @@
       width: 96%;
     }
     button {
-      background-color: #4caf95;
+      background-color: #0078d7;
       color: white;
       border: none;
       cursor: pointer;
       font-size: 16px;
       font-weight: bold;
     }
-    button:hover { background-color: #357866; }
+    button:hover { background-color: #005fa3; }
     h2 { text-align: center; }
     #msg { text-align: center; font-weight: bold; margin-top: 10px; }
   </style>
@@ -50,12 +50,12 @@
 
     <label>Zona</label>
     <input type="text" id="zona" placeholder="Zona">
-    
-    <label>Cucina</label>
-    <input type="text" id="cucina" placeholder="Cucina">
 
-    <label>Fascia di prezzo</label>
-    <select id="fascia">
+    <label>Cucina</label>
+    <input type="text" id="cucina" placeholder="Tipo di cucina">
+
+    <label>Prezzo</label>
+    <select id="prezzo">
       <option value="">-- Seleziona --</option>
       <option>Economico</option>
       <option>Medio</option>
@@ -66,16 +66,16 @@
     <input type="number" id="tripadvisor" min="1" max="5" placeholder="(1-5)">
 
     <label>Voto Alessandro</label>
-    <input type="number" id="votoA" min="1" max="5">
+    <input type="number" id="votoA" min="1" max="10">
 
     <label>Voto Francesca</label>
-    <input type="number" id="votoF" min="1" max="5">
+    <input type="number" id="votoF" min="1" max="10">
 
     <label>Voto Giacomo</label>
-    <input type="number" id="votoG" min="1" max="5">
+    <input type="number" id="votoG" min="1" max="10">
 
     <label>Voto Lucia</label>
-    <input type="number" id="votoL" min="1" max="5">
+    <input type="number" id="votoL" min="1" max="10">
 
     <button type="submit">💾 Salva / Aggiorna</button>
   </form>
@@ -84,7 +84,6 @@
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 sostituisci con il TUO URL
-
     let ristoranti = [];
 
     // 🔹 Carica tutti i dati dal foglio
@@ -104,7 +103,7 @@
       }
     }
 
-    // 🔹 Quando l’utente sceglie un nome, riempi i campi
+    // 🔹 Quando l’utente seleziona un nome, riempi i campi
     document.getElementById("nome").addEventListener("input", e => {
       const nome = e.target.value.trim().toLowerCase();
       const ristorante = ristoranti.find(r => r["Nome"].toString().trim().toLowerCase() === nome);
@@ -112,21 +111,21 @@
         document.getElementById("indirizzo").value = ristorante["Indirizzo"] || "";
         document.getElementById("zona").value = ristorante["Zona"] || "";
         document.getElementById("cucina").value = ristorante["Cucina"] || "";
-        document.getElementById("fascia").value = ristorante["Fascia di prezzo"] || "";
-        document.getElementById("tripadvisor").value = ristorante["Voto Tripadvisor"] || "";
-        document.getElementById("votoA").value = ristorante["Voto A"] || "";
-        document.getElementById("votoF").value = ristorante["Voto F"] || "";
-        document.getElementById("votoG").value = ristorante["Voto G"] || "";
-        document.getElementById("votoL").value = ristorante["Voto L"] || "";
+        document.getElementById("prezzo").value = ristorante["Prezzo"] || "";
+        document.getElementById("tripadvisor").value = ristorante["Tripadvisor"] || "";
+        document.getElementById("votoA").value = ristorante["Alessandro"] || "";
+        document.getElementById("votoF").value = ristorante["Francesca"] || "";
+        document.getElementById("votoG").value = ristorante["Giacomo"] || "";
+        document.getElementById("votoL").value = ristorante["Lucia"] || "";
       } else {
-        // Se è un nuovo nome, svuota tutti i campi
+        // Se è un nome nuovo, svuota tutto
         document.querySelectorAll("#formRistorante input, #formRistorante select").forEach(el => {
           if (el.id !== "nome") el.value = "";
         });
       }
     });
 
-    // 🔹 Quando il form viene inviato
+    // 🔹 Invia i dati al foglio
     document.getElementById("formRistorante").addEventListener("submit", async e => {
       e.preventDefault();
       const data = {
@@ -134,12 +133,12 @@
         indirizzo: document.getElementById("indirizzo").value,
         zona: document.getElementById("zona").value,
         cucina: document.getElementById("cucina").value,
-        fascia: document.getElementById("fascia").value,
+        prezzo: document.getElementById("prezzo").value,
         tripadvisor: document.getElementById("tripadvisor").value,
         votoA: document.getElementById("votoA").value,
-        votoB: document.getElementById("votoF").value,
-        votoC: document.getElementById("votoG").value,
-        votoD: document.getElementById("votoL").value
+        votoF: document.getElementById("votoF").value,
+        votoG: document.getElementById("votoG").value,
+        votoL: document.getElementById("votoL").value
       };
 
       try {
@@ -148,17 +147,14 @@
           mode: "no-cors",
           body: JSON.stringify(data)
         });
-        document.getElementById("msg").textContent = "✅ Dati salvati con successo!";
-        await caricaDati(); // ricarica i nomi aggiornati
+        document.getElementById("msg").textContent = "✅ Dati salvati!";
+        await caricaDati();
       } catch (err) {
         document.getElementById("msg").textContent = "❌ Errore: " + err;
       }
     });
 
-    // Carica i dati all’avvio
     caricaDati();
   </script>
 </body>
 </html>
-
-
