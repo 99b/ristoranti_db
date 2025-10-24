@@ -5,22 +5,82 @@
 <title>Tabella Ristoranti</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <style>
-body { font-family: Arial,sans-serif; max-width: 95%; margin:30px auto; background:#f9f9f9; padding:20px; }
-h2 { text-align:center; }
-table { border-collapse: collapse; width: 100%; margin-top:20px; background:white; border-radius:10px; overflow:hidden; }
-th, td { border:1px solid #ddd; padding:8px 10px; text-align:center; vertical-align:top; }
-th { background-color:#95ada2; color:black; }
-tr:nth-child(even){ background-color:#f2f2f2; }
-input { width:50%; display:block; margin:0 auto 15px auto; padding:10px; font-size:14px; border-radius:6px; border:1px solid #ccc; }
-button { border:none; background:none; cursor:pointer; font-size:16px; }
-button:hover { opacity:0.8; }
-a { display:block; text-align:center; margin-top:15px; color:#3e4f47; text-decoration:none; font-weight:bold; }
+body {
+    font-family: Arial,sans-serif;
+    max-width: 95%;
+    margin:30px auto;
+    background:#f9f9f9;
+    padding:20px; }
+h2 {
+    text-align:center;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top:20px;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+}
+th, td {
+    border:1px solid #ddd;
+    padding:8px 10px;
+    text-align:center;
+    vertical-align:top;
+}
+th {
+    background-color:#95ada2;
+    color:black;
+}
+tr:nth-child(even){
+    background-color:#f2f2f2;
+}
+input {
+    width:50%;
+    display:block;
+    margin:0 auto 15px auto;
+    padding:10px;
+    font-size:14px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+button {
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-size:16px;
+}
+button.btnDettagli:hover {
+  color: #677b94;
+}
+button.btnElimina:hover {
+  color: #946767;
+}
+a {
+    display:block;
+    text-align:center;
+    margin-top:15px;
+    color:#3e4f47;
+    text-decoration:none;
+    font-weight:bold;
+}
 
 .modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background-color: rgba(0,0,0,0.6); align-items:center; justify-content:center; }
 .modal-content { background-color:#fff; padding:20px; border-radius:12px; width:90%; max-width:800px; max-height:85vh; overflow-y:auto; box-shadow:0 0 15px rgba(0,0,0,0.3); }
-.modal h3 { margin-top:0; border-bottom:2px solid #95ada2; padding-bottom:6px; }
-.modal-close { float:right; cursor:pointer; font-size:20px; color:#666; }
-.modal-close:hover { color:#000; }
+.modal h3 {
+    margin-top:0;
+    border-bottom:2px solid #95ada2;
+    padding-bottom:6px;
+}
+.modal-close {
+    float:right;
+    cursor:pointer;
+    font-size:20px;
+    color:#666;
+}
+.modal-close:hover {
+    color:#000;
+}
 
 .popup-flex { display:flex; flex-wrap:wrap; gap:20px; }
 .popup-left { flex:1 1 50%; min-width:280px; }
@@ -38,7 +98,9 @@ a { display:block; text-align:center; margin-top:15px; color:#3e4f47; text-decor
 </head>
 <body>
 
-<h2>📋 Elenco Ristoranti</h2>
+<h2>
+    <i class="fa-solid fa-utensils"></i> Elenco Ristoranti
+</h2>
 <input type="text" id="filtro" placeholder="Filtra per nome, zona o cucina...">
 
 <table id="tabellaRistoranti">
@@ -95,10 +157,10 @@ async function caricaTabella(){
       <td>${r["Giacomo"]||""}</td><td>${r["Lucia"]||""}</td>
       <td><b>${r.media? r.media.toFixed(1):""}</b></td>
       <td>
-        <button class="btnDettagli" data-info='${JSON.stringify(r).replace(/'/g,"&apos;")}'>
+        <button class="btnDettagli" title="Dettagli" data-info='${JSON.stringify(r).replace(/'/g,"&apos;")}'>
           <i class="fa-solid fa-eye"></i>
         </button>
-        <button class="btnElimina" data-nome="${r["Nome"]}">
+        <button class="btnElimina" title="Elimina" data-nome="${r["Nome"]}">
           <i class="fa-solid fa-trash"></i>
         </button>
       </td>
