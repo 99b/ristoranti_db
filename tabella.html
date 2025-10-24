@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Tabella Ristoranti</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,7 +12,9 @@
       background: #f9f9f9;
       padding: 20px;
     }
-    h2 { text-align: center; }
+    h2 {
+      text-align: center;
+    }
     table {
       border-collapse: collapse;
       width: 100%;
@@ -24,12 +27,15 @@
       border: 1px solid #ddd;
       padding: 8px 10px;
       text-align: center;
+      vertical-align: top;
     }
     th {
       background-color: #95ada2;
       color: black;
     }
-    tr:nth-child(even) { background-color: #f2f2f2; }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
     input {
       width: 50%;
       display: block;
@@ -38,6 +44,12 @@
       font-size: 14px;
       border-radius: 6px;
       border: 1px solid #ccc;
+    }
+    textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 40px;
+      font-family: inherit;
     }
     a {
       display: block;
@@ -50,14 +62,15 @@
   </style>
 </head>
 <body>
-  <h2>📋 Elenco Ristoranti</h2>
+  <h2>
+    <i class="fa-solid fa-utensils"></i> Elenco Ristoranti
+  </h2>
   <input type="text" id="filtro" placeholder="Filtra per nome, zona o cucina...">
 
   <table id="tabellaRistoranti">
     <thead>
       <tr>
         <th>Nome</th>
-        <th>Indirizzo</th>
         <th>Zona</th>
         <th>Cucina</th>
         <th>Prezzo</th>
@@ -67,49 +80,73 @@
         <th>Giacomo</th>
         <th>Lucia</th>
         <th>Media</th>
+        <th>Note</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <a href="index.html">⬅️ Torna all’inserimento / modifica</a>
+  <a href="index.html">
+    <i class="fa-solid fa-arrow-left"></i> Torna all’inserimento / modifica
+  </a>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 sostituisci con il tuo URL
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 sostituisci
 
     async function caricaTabella() {
-      try {
-        const res = await fetch(scriptURL);
-        const data = await res.json();
-        const tbody = document.querySelector("#tabellaRistoranti tbody");
-        tbody.innerHTML = "";
-        data.forEach(r => {
-          const a = parseFloat(r["Alessandro"]) || 0;
-          const f = parseFloat(r["Francesca"]) || 0;
-          const g = parseFloat(r["Giacomo"]) || 0;
-          const l = parseFloat(r["Lucia"]) || 0;
-          const voti = [a, f, g, l].filter(v => v > 0);
-          const media = voti.length ? (voti.reduce((s, v) => s + v, 0) / voti.length).toFixed(1) : "";
+      const res = await fetch(scriptURL);
+      const data = await res.json();
 
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${r["Nome"] || ""}</td>
-            <td>${r["Indirizzo"] || ""}</td>
-            <td>${r["Zona"] || ""}</td>
-            <td>${r["Cucina"] || ""}</td>
-            <td>${r["Prezzo"] || ""}</td>
-            <td>${r["Tripadvisor"] || ""}</td>
-            <td>${r["Alessandro"] || ""}</td>
-            <td>${r["Francesca"] || ""}</td>
-            <td>${r["Giacomo"] || ""}</td>
-            <td>${r["Lucia"] || ""}</td>
-            <td><b>${media}</b></td>
-          `;
-          tbody.appendChild(tr);
+      // calcola media e ordina: prima chi non ha voti, poi per media decrescente
+      const arr = data.map(r => {
+        const voti = [r["Alessandro"], r["Francesca"], r["Giacomo"], r["Lucia"]]
+          .map(v => parseFloat(v) || 0)
+          .filter(v => v > 0);
+        const media = voti.length ? (voti.reduce((s, v) => s + v, 0) / voti.length) : 0;
+        return { ...r, media };
+      }).sort((a, b) => {
+        const aVuoto = a.media === 0;
+        const bVuoto = b.media === 0;
+        if (aVuoto && !bVuoto) return -1;
+        if (!aVuoto && bVuoto) return 1;
+        return b.media - a.media;
+      });
+
+      const tbody = document.querySelector("#tabellaRistoranti tbody");
+      tbody.innerHTML = "";
+
+      arr.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r["Nome"] || ""}</td>
+          <td>${r["Zona"] || ""}</td>
+          <td>${r["Cucina"] || ""}</td>
+          <td>${r["Prezzo"] || ""}</td>
+          <td>${r["Tripadvisor"] || ""}</td>
+          <td>${r["Alessandro"] || ""}</td>
+          <td>${r["Francesca"] || ""}</td>
+          <td>${r["Giacomo"] || ""}</td>
+          <td>${r["Lucia"] || ""}</td>
+          <td><b>${r.media ? r.media.toFixed(1) : ""}</b></td>
+          <td>
+            <textarea data-nome="${r["Nome"]}">${r["Note"] || ""}</textarea>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // salva note quando modificate
+      document.querySelectorAll("textarea[data-nome]").forEach(txt => {
+        txt.addEventListener("change", async e => {
+          const nome = e.target.dataset.nome;
+          const nuovoTesto = e.target.value.trim();
+
+          const body = JSON.stringify({ nome, note: nuovoTesto, append: true });
+          await fetch(scriptURL, { method: "POST", mode: "no-cors", body });
+          e.target.style.borderColor = "#28a745";
+          setTimeout(() => e.target.style.borderColor = "#ccc", 800);
         });
-      } catch (err) {
-        console.error("Errore nel caricamento:", err);
-      }
+      });
     }
 
     document.getElementById("filtro").addEventListener("input", e => {
