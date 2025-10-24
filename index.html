@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Gestione Ristoranti</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -27,6 +28,7 @@
     textarea {
       resize: vertical;
       min-height: 60px;
+      width: 96%;
     }
     button {
       background-color: #3e4f47;
@@ -46,6 +48,7 @@
       text-align: center;
       font-weight: bold;
       margin-top: 10px;
+      color: #3e4f47;
     }
     a {
       display: block;
@@ -58,10 +61,10 @@
   </style>
 </head>
 <body>
-  <h2>Gestione Ristoranti</h2>
+  <h2>Inserisci un Ristorante</h2>
   
   <form id="formRistorante">
-    <label for="nome">Nome ristorante</label>
+    <label for="nome">Nome</label>
     <input list="nomiRistoranti" id="nome" placeholder="Scrivi o seleziona un nome" required>
     <datalist id="nomiRistoranti"></datalist>
 
@@ -97,15 +100,17 @@
     <label>Voto Lucia</label>
     <input type="number" id="votoL" min="1" max="10">
 
-    <label>Note (aggiungi, non sovrascrive)</label>
+    <label>Note (aggiungi i tuoi commenti)</label>
     <textarea id="note" placeholder="Scrivi eventuali note o commenti..."></textarea>
 
-    <button type="submit">💾 Salva / Aggiorna</button>
+    <button type="submit">
+      <i class="fa-solid fa-floppy-disk"></i> Salva / Aggiorna
+    </button>
   </form>
 
   <p id="msg"></p>
 
-  <a href="tabella.html">📊 Vai alla tabella ristoranti</a>
+  <a href="tabella.html"> Vai alla tabella ristoranti</a>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 sostituisci
@@ -160,7 +165,7 @@
         note: note.value
       };
       await fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-      msg.textContent = "✅ Dati salvati!";
+      msg.innerHTML = '<i class="fa-solid fa-check" style="color:#3e4f47;"></i> Dati salvati!';
       setTimeout(() => msg.textContent = "", 2000);
       caricaDati();
     });
@@ -169,3 +174,4 @@
   </script>
 </body>
 </html>
+
