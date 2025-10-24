@@ -13,7 +13,7 @@
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    input, select, button {
+    input, select, textarea, button {
       width: 100%;
       margin: 8px 0;
       padding: 10px;
@@ -24,6 +24,10 @@
     input {
       width: 96%;
     }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
     button {
       background-color: #3e4f47;
       color: white;
@@ -32,9 +36,17 @@
       font-size: 16px;
       font-weight: bold;
     }
-    button:hover { background-color: #658275; }
-    h2 { text-align: center; }
-    #msg { text-align: center; font-weight: bold; margin-top: 10px; }
+    button:hover {
+      background-color: #658275;
+    }
+    h2 {
+      text-align: center;
+    }
+    #msg {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 10px;
+    }
     a {
       display: block;
       text-align: center;
@@ -54,13 +66,13 @@
     <datalist id="nomiRistoranti"></datalist>
 
     <label>Indirizzo</label>
-    <input type="text" id="indirizzo" placeholder="Indirizzo">
+    <input type="text" id="indirizzo">
 
     <label>Zona</label>
-    <input type="text" id="zona" placeholder="Zona">
+    <input type="text" id="zona">
 
     <label>Cucina</label>
-    <input type="text" id="cucina" placeholder="Tipo di cucina">
+    <input type="text" id="cucina">
 
     <label>Prezzo</label>
     <select id="prezzo">
@@ -71,19 +83,22 @@
     </select>
 
     <label>Tripadvisor</label>
-    <input type="number" step="0.01" id="tripadvisor" min="1" max="5" placeholder="(1-5)">
+    <input type="number" id="tripadvisor" min="1" max="5">
 
     <label>Voto Alessandro</label>
-    <input type="number" step="0.01" id="votoA" min="1.00" max="5.00">
+    <input type="number" id="votoA" min="1" max="10">
 
     <label>Voto Francesca</label>
-    <input type="number" step="0.01" id="votoF" min="1.00" max="5.00">
+    <input type="number" id="votoF" min="1" max="10">
 
     <label>Voto Giacomo</label>
-    <input type="number" step="0.01" id="votoG" min="1.00" max="5.00">
+    <input type="number" id="votoG" min="1" max="10">
 
     <label>Voto Lucia</label>
-    <input type="number" step="0.01" id="votoL" min="1.00" max="5.00">
+    <input type="number" id="votoL" min="1" max="10">
+
+    <label>Note (aggiungi, non sovrascrive)</label>
+    <textarea id="note" placeholder="Scrivi eventuali note o commenti..."></textarea>
 
     <button type="submit">💾 Salva / Aggiorna</button>
   </form>
@@ -93,73 +108,64 @@
   <a href="tabella.html">📊 Vai alla tabella ristoranti</a>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 Sostituisci
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 sostituisci
 
     let ristoranti = [];
 
     async function caricaDati() {
-      try {
-        const res = await fetch(scriptURL);
-        ristoranti = await res.json();
-        const datalist = document.getElementById("nomiRistoranti");
-        datalist.innerHTML = "";
-        ristoranti.forEach(r => {
-          const opt = document.createElement("option");
-          opt.value = r["Nome"];
-          datalist.appendChild(opt);
-        });
-      } catch (err) {
-        console.error("Errore caricando i dati:", err);
-      }
+      const res = await fetch(scriptURL);
+      ristoranti = await res.json();
+      const datalist = document.getElementById("nomiRistoranti");
+      datalist.innerHTML = "";
+      ristoranti.forEach(r => {
+        const opt = document.createElement("option");
+        opt.value = r["Nome"];
+        datalist.appendChild(opt);
+      });
     }
 
     document.getElementById("nome").addEventListener("input", e => {
       const nome = e.target.value.trim().toLowerCase();
-      const ristorante = ristoranti.find(r => r["Nome"].toString().trim().toLowerCase() === nome);
-      if (ristorante) {
-        document.getElementById("indirizzo").value = ristorante["Indirizzo"] || "";
-        document.getElementById("zona").value = ristorante["Zona"] || "";
-        document.getElementById("cucina").value = ristorante["Cucina"] || "";
-        document.getElementById("prezzo").value = ristorante["Prezzo"] || "";
-        document.getElementById("tripadvisor").value = ristorante["Tripadvisor"] || "";
-        document.getElementById("votoA").value = ristorante["Alessandro"] || "";
-        document.getElementById("votoF").value = ristorante["Francesca"] || "";
-        document.getElementById("votoG").value = ristorante["Giacomo"] || "";
-        document.getElementById("votoL").value = ristorante["Lucia"] || "";
+      const r = ristoranti.find(x => x["Nome"].toLowerCase() === nome);
+      if (r) {
+        document.getElementById("indirizzo").value = r["Indirizzo"] || "";
+        document.getElementById("zona").value = r["Zona"] || "";
+        document.getElementById("cucina").value = r["Cucina"] || "";
+        document.getElementById("prezzo").value = r["Prezzo"] || "";
+        document.getElementById("tripadvisor").value = r["Tripadvisor"] || "";
+        document.getElementById("votoA").value = r["Alessandro"] || "";
+        document.getElementById("votoF").value = r["Francesca"] || "";
+        document.getElementById("votoG").value = r["Giacomo"] || "";
+        document.getElementById("votoL").value = r["Lucia"] || "";
+        document.getElementById("note").value = r["Note"] || "";
       } else {
-        document.querySelectorAll("#formRistorante input, #formRistorante select").forEach(el => {
-          if (el.id !== "nome") el.value = "";
-        });
+        document.querySelectorAll("#formRistorante input, #formRistorante select, #formRistorante textarea")
+          .forEach(el => { if (el.id !== "nome") el.value = ""; });
       }
     });
 
     document.getElementById("formRistorante").addEventListener("submit", async e => {
       e.preventDefault();
       const data = {
-        nome: document.getElementById("nome").value,
-        indirizzo: document.getElementById("indirizzo").value,
-        zona: document.getElementById("zona").value,
-        cucina: document.getElementById("cucina").value,
-        prezzo: document.getElementById("prezzo").value,
-        tripadvisor: document.getElementById("tripadvisor").value,
-        votoA: document.getElementById("votoA").value,
-        votoF: document.getElementById("votoF").value,
-        votoG: document.getElementById("votoG").value,
-        votoL: document.getElementById("votoL").value
+        nome: nome.value,
+        indirizzo: indirizzo.value,
+        zona: zona.value,
+        cucina: cucina.value,
+        prezzo: prezzo.value,
+        tripadvisor: tripadvisor.value,
+        votoA: votoA.value,
+        votoF: votoF.value,
+        votoG: votoG.value,
+        votoL: votoL.value,
+        note: note.value
       };
-
-      try {
-        await fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
-        document.getElementById("msg").textContent = "✅ Dati salvati!";
-        await caricaDati();
-      } catch (err) {
-        document.getElementById("msg").textContent = "❌ Errore: " + err;
-      }
+      await fetch(scriptURL, { method: "POST", mode: "no-cors", body: JSON.stringify(data) });
+      msg.textContent = "✅ Dati salvati!";
+      setTimeout(() => msg.textContent = "", 2000);
+      caricaDati();
     });
 
     caricaDati();
   </script>
 </body>
 </html>
-
-
