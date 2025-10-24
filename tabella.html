@@ -12,9 +12,8 @@
       background: #f9f9f9;
       padding: 20px;
     }
-    h2 {
-      text-align: center;
-    }
+    h2 { text-align: center; }
+
     table {
       border-collapse: collapse;
       width: 100%;
@@ -29,13 +28,9 @@
       text-align: center;
       vertical-align: top;
     }
-    th {
-      background-color: #95ada2;
-      color: black;
-    }
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
+    th { background-color: #95ada2; color: black; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+
     input {
       width: 50%;
       display: block;
@@ -45,12 +40,15 @@
       border-radius: 6px;
       border: 1px solid #ccc;
     }
-    textarea {
-      width: 100%;
-      resize: vertical;
-      min-height: 40px;
-      font-family: inherit;
+
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 16px;
     }
+    button:hover { opacity: 0.8; }
+
     a {
       display: block;
       text-align: center;
@@ -58,6 +56,95 @@
       color: #3e4f47;
       text-decoration: none;
       font-weight: bold;
+    }
+
+    /* 🔹 MODALE DETTAGLI */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    .modal h3 {
+      margin-top: 0;
+      border-bottom: 2px solid #95ada2;
+      padding-bottom: 6px;
+    }
+    .modal-close {
+      float: right;
+      cursor: pointer;
+      font-size: 20px;
+      color: #666;
+    }
+    .modal-close:hover { color: #000; }
+
+    /* 🔹 Layout a due colonne */
+    .popup-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .popup-left {
+      flex: 1 1 50%;
+      min-width: 280px;
+    }
+    .popup-right {
+      flex: 1 1 45%;
+      min-width: 250px;
+    }
+
+    .info-row {
+      margin-bottom: 8px;
+    }
+    .info-row strong {
+      display: inline-block;
+      width: 120px;
+      color: #555;
+    }
+
+    .map-container {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* mantiene il rapporto 1:1 (quadrato) */
+    }
+    .map-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 10px;
+    }
+
+    .map-link {
+      display: block;
+      margin-top: 6px;
+      text-align: center;
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .map-link:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 600px) {
+      .popup-flex { flex-direction: column; }
     }
   </style>
 </head>
@@ -80,24 +167,33 @@
         <th>Giacomo</th>
         <th>Lucia</th>
         <th>Media</th>
-        <th>Note</th>
+        <th>Azioni</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <a href="index.html">
-    <i class="fa-solid fa-arrow-left"></i> Torna all’inserimento / modifica
-  </a>
+  <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Torna all’inserimento / modifica</a>
+
+  <!-- 🔹 MODALE -->
+  <div class="modal" id="popupDettagli">
+    <div class="modal-content">
+      <span class="modal-close" id="chiudiPopup">&times;</span>
+      <h3 id="titoloPopup"></h3>
+      <div class="popup-flex">
+        <div class="popup-left" id="contenutoPopup"></div>
+        <div class="popup-right" id="mappaPopup"></div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 sostituisci
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec";
 
     async function caricaTabella() {
       const res = await fetch(scriptURL);
       const data = await res.json();
 
-      // calcola media e ordina: prima chi non ha voti, poi per media decrescente
       const arr = data.map(r => {
         const voti = [r["Alessandro"], r["Francesca"], r["Giacomo"], r["Lucia"]]
           .map(v => parseFloat(v) || 0)
@@ -129,25 +225,76 @@
           <td>${r["Lucia"] || ""}</td>
           <td><b>${r.media ? r.media.toFixed(1) : ""}</b></td>
           <td>
-            <textarea data-nome="${r["Nome"]}">${r["Note"] || ""}</textarea>
+            <button class="btnDettagli" data-info='${JSON.stringify(r).replace(/'/g, "&apos;")}'>
+              <i class="fa-solid fa-eye"></i>
+            </button>
+            <button class="btnElimina" data-nome="${r["Nome"]}">
+              <i class="fa-solid fa-trash"></i>
+            </button>
           </td>
         `;
         tbody.appendChild(tr);
       });
 
-      // salva note quando modificate
-      document.querySelectorAll("textarea[data-nome]").forEach(txt => {
-        txt.addEventListener("change", async e => {
-          const nome = e.target.dataset.nome;
-          const nuovoTesto = e.target.value.trim();
+      // 🔹 Mostra popup dettagli
+      document.querySelectorAll(".btnDettagli").forEach(btn => {
+        btn.addEventListener("click", e => {
+          const r = JSON.parse(e.currentTarget.dataset.info.replace(/&apos;/g, "'"));
+          document.getElementById("titoloPopup").textContent = r["Nome"];
 
-          const body = JSON.stringify({ nome, note: nuovoTesto, append: true });
+          const contenuto = `
+            <div class="info-row"><strong>Zona:</strong> ${r["Zona"] || "-"}</div>
+            <div class="info-row"><strong>Indirizzo:</strong> ${r["Indirizzo"] || "-"}</div>
+            <div class="info-row"><strong>Cucina:</strong> ${r["Cucina"] || "-"}</div>
+            <div class="info-row"><strong>Prezzo:</strong> ${r["Prezzo"] || "-"}</div>
+            <div class="info-row"><strong>Tripadvisor:</strong> ${r["Tripadvisor"] || "-"}</div>
+            <div class="info-row"><strong>Alessandro:</strong> ${r["Alessandro"] || "-"}</div>
+            <div class="info-row"><strong>Francesca:</strong> ${r["Francesca"] || "-"}</div>
+            <div class="info-row"><strong>Giacomo:</strong> ${r["Giacomo"] || "-"}</div>
+            <div class="info-row"><strong>Lucia:</strong> ${r["Lucia"] || "-"}</div>
+            <div class="info-row"><strong>Media:</strong> ${r.media ? r.media.toFixed(1) : "-"}</div>
+            <hr>
+            <div class="info-row"><strong>Note:</strong><br>${(r["Note"] || "").replace(/\n/g, "<br>") || "<em>Nessuna nota</em>"}</div>
+          `;
+          document.getElementById("contenutoPopup").innerHTML = contenuto;
+
+          const mapDiv = document.getElementById("mappaPopup");
+          if (r["Indirizzo"]) {
+            const query = encodeURIComponent("Milano, " + r["Indirizzo"]);
+            mapDiv.innerHTML = `
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps?q=${query}&output=embed" loading="lazy"></iframe>
+            </div>
+            `;
+          } else {
+            mapDiv.innerHTML = "<em>Indirizzo non disponibile</em>";
+          }
+
+          document.getElementById("popupDettagli").style.display = "flex";
+        });
+      });
+
+      // 🔹 Elimina ristorante
+      document.querySelectorAll(".btnElimina").forEach(btn => {
+        btn.addEventListener("click", async e => {
+          const nome = e.currentTarget.dataset.nome;
+          if (!confirm(`Vuoi davvero eliminare "${nome}"?`)) return;
+          const body = JSON.stringify({ nome, elimina: true });
           await fetch(scriptURL, { method: "POST", mode: "no-cors", body });
-          e.target.style.borderColor = "#28a745";
-          setTimeout(() => e.target.style.borderColor = "#ccc", 800);
+          e.currentTarget.closest("tr").style.background = "#ffd6d6";
+          setTimeout(caricaTabella, 800);
         });
       });
     }
+
+    document.getElementById("chiudiPopup").addEventListener("click", () => {
+      document.getElementById("popupDettagli").style.display = "none";
+    });
+    window.addEventListener("click", e => {
+      if (e.target.id === "popupDettagli") {
+        document.getElementById("popupDettagli").style.display = "none";
+      }
+    });
 
     document.getElementById("filtro").addEventListener("input", e => {
       const filtro = e.target.value.toLowerCase();
