@@ -5,124 +5,398 @@
 <title>Tabella Ristoranti</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/99b/ristoranti_db/main/images/7845744.png" sizes="96x96">
+
 <style>
 body {
-    font-family: Arial,sans-serif;
-    max-width: 95%;
-    margin:30px auto;
-    background:#f9f9f9;
-    padding:20px; }
+  font-family: Arial, sans-serif;
+  max-width: 95%;
+  margin: 30px auto;
+  background: #f9f9f9;
+  padding: 20px;
+}
+
 h2 {
-    text-align:center;
+  text-align: center;
+  color: #2e3834;
 }
+
+/* --- Barra filtri elegante --- */
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px auto;
+}
+
+.filter-bar input,
+.filter-bar select {
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.2s ease;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.filter-bar input {
+  width: 300px;
+}
+
+.filter-bar input:focus,
+.filter-bar select:focus {
+  border-color: #95ada2;
+  box-shadow: 0 0 0 3px rgba(149,173,162,0.3);
+}
+
+.filter-bar select {
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.filter-reset {
+  background: #95ada2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: 0.2s;
+}
+
+.filter-reset:hover {
+  background: #7e9a8c;
+}
+
+@media (max-width:600px){
+  .filter-bar input, .filter-bar select, .filter-reset { width: 100%; }
+}
+
+/* --- Tabella --- */
 table {
-    border-collapse: collapse;
-    width: 100%;
-    margin-top:20px;
-    background:white;
-    border-radius:10px;
-    overflow:hidden;
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
 }
+
 th, td {
-    border:1px solid #ddd;
-    padding:8px 10px;
-    text-align:center;
-    vertical-align:top;
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  text-align: center;
+  vertical-align: top;
 }
+
 th {
-    background-color:#95ada2;
-    color:black;
+  background-color: #95ada2;
+  color: black;
 }
+
 tr:nth-child(even){
-    background-color:#f2f2f2;
+  background-color: #f2f2f2;
 }
-input {
-    width:50%;
-    display:block;
-    margin:0 auto 15px auto;
-    padding:10px;
-    font-size:14px;
-    border-radius:6px;
-    border:1px solid #ccc;
-}
+
 button {
-    border:none;
-    background:none;
-    cursor:pointer;
-    font-size:16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
 }
-button.btnDettagli:hover {
-  color: #677b94;
+
+button.salvaModifiche {
+  background:#95ada2;
+  color:white;
+  padding:10px 20px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
 }
-button.btnElimina:hover {
-  color: #946767;
+
+button.salvaModifiche:hover {
+  background-color: #788d83;
+  transform: scale(1.05);
 }
+
+button.btnDettagli:hover { color: #677b94; }
+button.btnModifica:hover { color: #67946f; }
+button.btnElimina:hover { color: #946767; }
+
 a {
-    display:block;
-    text-align:center;
-    margin-top:15px;
-    color:#3e4f47;
-    text-decoration:none;
-    font-weight:bold;
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+  color: #3e4f47;
+  text-decoration: none;
+  font-weight: bold;
 }
 
+/* --- Select elegante --- */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  min-width: 220px;
+}
+
+.select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  background-color: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  padding: 10px 42px 10px 38px; /* spazio per le icone */
+  font-size: 15px;
+  color: #333;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.25s ease;
+}
+
+.select-wrapper select:hover {
+  border-color: #95ada2;
+  box-shadow: 0 0 0 3px rgba(149,173,162,0.2);
+}
+
+.select-wrapper select:focus {
+  border-color: #95ada2;
+  box-shadow: 0 0 0 3px rgba(149,173,162,0.3);
+  outline: none;
+}
+
+.select-wrapper .select-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6c7c74;
+  font-size: 16px;
+}
+
+.select-wrapper::after {
+  content: '\f078'; /* freccia verso il basso Font Awesome */
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  color: #6c7c74;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+.select-wrapper:focus-within::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+select option {
+  padding: 8px 12px;
+}
+
+/* --- Select --- */
+.custom-select {
+  position: relative;
+  min-width: 220px;
+  font-size: 15px;
+}
+
+.select-display {
+  background: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: all 0.25s ease;
+}
+
+.select-display:hover {
+  border-color: #95ada2;
+  box-shadow: 0 0 0 3px rgba(149,173,162,0.2);
+}
+
+.select-display i.fa-earth-europe {
+  color: #6c7c74;
+  margin-right: 8px;
+}
+
+.select-display .freccia {
+  color: #6c7c74;
+  transition: transform 0.3s ease;
+}
+
+.custom-select.open .freccia {
+  transform: rotate(180deg);
+}
+
+/* Lista delle opzioni */
+.select-options {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1.5px solid #95ada2;
+  border-radius: 10px;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 1000;
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.custom-select.open .select-options {
+  display: block;
+}
+
+.select-options li {
+  padding: 10px 14px;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.select-options li:hover {
+  background: #e9f0ec;
+  color: #2e3834;
+}
+
+.select-options li.selected {
+  background: #95ada2;
+  color: white;
+  font-weight: bold;
+}
+
+/* --- Modale --- */
 .modal {
-    display:none;
-    position:fixed;
-    z-index:1000;
-    left:0;
-    top:0;
-    width:100%;
-    height:100%;
-    background-color: rgba(0,0,0,0.6);
-    align-items:center;
-    justify-content:center;
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  align-items: center;
+  justify-content: center;
 }
+
 .modal-content {
-    background-color:#fff;
-    padding:20px;
-    border-radius:12px;
-    width:90%;
-    max-width:800px;
-    max-height:85vh;
-    overflow-y:auto;
-    box-shadow:0 0 15px rgba(0,0,0,0.3);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
 }
+
 .modal h3 {
-    margin-top:0;
-    border-bottom:2px solid #95ada2;
-    padding-bottom:6px;
+  margin-top: 0;
+  border-bottom: 2px solid #95ada2;
+  padding-bottom: 6px;
 }
+
 .modal-close {
-    float:right;
-    cursor:pointer;
-    font-size:20px;
-    color:#666;
-}
-.modal-close:hover {
-    color:#000;
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
 }
 
-.popup-flex { display:flex; flex-wrap:wrap; gap:20px; }
-.popup-left { flex:1 1 50%; min-width:280px; }
-.popup-right { flex:1 1 45%; min-width:250px; }
-.info-row { margin-bottom:8px; }
-.info-row strong { display:inline-block; width:120px; color:#555; }
+.modal-close:hover { color: #000; }
 
-.map-container { position:relative; width:100%; padding-top:100%; }
-.map-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:10px; }
-.map-link { display:block; margin-top:6px; text-align:center; color:#0066cc; text-decoration:none; font-weight:bold; }
-.map-link:hover { text-decoration:underline; }
+/* --- Popup due colonne --- */
+.popup-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
 
-@media (max-width:600px){ .popup-flex { flex-direction:column; } }
+.popup-left, .popup-right {
+  flex: 1 1 45%;
+  min-width: 260px;
+}
+
+.popup-left .info-row,
+.popup-right .info-row {
+  margin-bottom: 10px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.notifica-salvato {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  background: #95ada2;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 10px;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: all 0.4s ease;
+  z-index: 2000;
+}
+
+.notifica-salvato.visibile {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+.info-row strong { display: inline-block; width: 120px; color: #555; }
+
+.map-container { position: relative; width: 100%; padding-top: 100%; }
+.map-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 10px; }
+.map-link { display: block; margin-top: 6px; text-align: center; color: #62736b; text-decoration: none; font-weight: bold; }
+.map-link:hover { text-decoration: underline; }
+
+@media (max-width:600px){ .popup-flex { flex-direction: column; } }
 </style>
 </head>
 <body>
 
-<h2>
-    <i class="fa-solid fa-utensils"></i> Elenco Ristoranti
-</h2>
-<input type="text" id="filtro" placeholder="Filtra per nome, zona o cucina...">
+<h2><i class="fa-solid fa-utensils"></i> Elenco Ristoranti</h2>
+
+<!-- 🔍 Barra Filtri -->
+<div class="filter-bar">
+    <div style="position: relative;">
+        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #888;"></i>
+        <input type="text" id="filtro" placeholder="Filtra per nome, zona o cucina..." style="padding-left: 30px;">
+    </div>
+
+    <div class="custom-select" id="selectCittaWrapper">
+    <div class="select-display">
+        <i class="fa-solid fa-earth-europe"></i>
+        <span id="selectedCity">Tutte le città</span>
+        <i class="fa-solid fa-angle-down freccia"></i>
+    </div>
+    <ul class="select-options" id="cityOptions"></ul>
+    </div>
+
+    <button class="filter-reset" id="resetFiltri">
+        <i class="fa-solid fa-rotate-left"></i> Reset
+    </button>
+</div>
 
 <table id="tabellaRistoranti">
   <thead>
@@ -137,40 +411,48 @@ a {
 
 <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Torna all’inserimento / modifica</a>
 
+<!-- MODALE DETTAGLI E MODIFICA -->
 <div class="modal" id="popupDettagli">
   <div class="modal-content">
     <span class="modal-close" id="chiudiPopup">&times;</span>
     <h3 id="titoloPopup"></h3>
-    <div class="popup-flex">
-      <div class="popup-left" id="contenutoPopup"></div>
-      <div class="popup-right" id="mappaPopup"></div>
-    </div>
+    <div id="contenutoPopup"></div>
+    <div id="mappaPopup"></div>
   </div>
 </div>
 
 <script>
 const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec";
 
-async function caricaTabella(){
+function mostraNotifica(testo="Elemento salvato!") {
+  const esistente = document.querySelector(".notifica-salvato");
+  if(esistente) esistente.remove();
+  const notif = document.createElement("div");
+  notif.className = "notifica-salvato";
+  notif.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${testo}`;
+  document.body.appendChild(notif);
+  setTimeout(() => notif.classList.add("visibile"), 50);
+  setTimeout(() => { notif.classList.remove("visibile"); setTimeout(()=>notif.remove(),400); }, 2500);
+}
+
+async function caricaTabella() {
   const res = await fetch(scriptURL);
   const data = await res.json();
 
-  const arr = data.map(r=>{
-    const voti = [r["Alessandro"],r["Francesca"],r["Giacomo"],r["Lucia"]].map(v=>parseFloat(v)||0).filter(v=>v>0);
+  const arr = data.map(r => {
+    const voti = [r["Alessandro"], r["Francesca"], r["Giacomo"], r["Lucia"]].map(v=>parseFloat(v)||0).filter(v=>v>0);
     const media = voti.length ? voti.reduce((s,v)=>s+v,0)/voti.length : 0;
-    return {...r, media};
-  }).sort((a,b)=>{
-    const aVuoto = a.media===0, bVuoto = b.media===0;
-    if(aVuoto&&!bVuoto) return -1;
-    if(!aVuoto&&bVuoto) return 1;
-    return b.media - a.media;
-  });
+    let citta = "";
+    if(r["Indirizzo"] && r["Indirizzo"].includes(",")) citta = r["Indirizzo"].split(",").pop().trim();
+    return {...r, media, citta};
+  }).sort((a,b)=>b.media - a.media);
 
   const tbody = document.querySelector("#tabellaRistoranti tbody");
   tbody.innerHTML = "";
 
   arr.forEach(r=>{
     const tr = document.createElement("tr");
+    tr.dataset.citta = r.citta || "";
     tr.innerHTML = `
       <td>${r["Nome"]||""}</td><td>${r["Zona"]||""}</td><td>${r["Cucina"]||""}</td>
       <td>${r["Prezzo"]||""}</td><td>${r["Tripadvisor"]||""}</td>
@@ -178,38 +460,91 @@ async function caricaTabella(){
       <td>${r["Giacomo"]||""}</td><td>${r["Lucia"]||""}</td>
       <td><b>${r.media? r.media.toFixed(1):""}</b></td>
       <td>
-        <button class="btnDettagli" title="Dettagli" data-info='${JSON.stringify(r).replace(/'/g,"&apos;")}'>
-          <i class="fa-solid fa-eye"></i>
-        </button>
-        <button class="btnElimina" title="Elimina" data-nome="${r["Nome"]}">
-          <i class="fa-solid fa-trash"></i>
-        </button>
+        <button class="btnDettagli" data-info='${JSON.stringify(r).replace(/'/g,"&apos;")}'><i class="fa-solid fa-eye"></i></button>
+        <button class="btnModifica" data-info='${JSON.stringify(r).replace(/'/g,"&apos;")}'><i class="fa-solid fa-pen-to-square"></i></button>
+        <button class="btnElimina" data-nome="${r["Nome"]}"><i class="fa-solid fa-trash"></i></button>
       </td>
     `;
     tbody.appendChild(tr);
   });
+  // --- Dropdown città ---
+  const wrapper = document.getElementById("selectCittaWrapper");
+  const display = wrapper.querySelector(".select-display");
+  const list = document.getElementById("cityOptions");
+  const selectedSpan = document.getElementById("selectedCity");
 
-  // Dettagli popup
+  const cittaUniche = [...new Set(arr.map(r=>r.citta).filter(Boolean))].sort();
+  list.innerHTML = `<li data-value=""><i class="fa-solid fa-earth-europe" style="margin-right:6px;color:#6c7c74"></i>Tutte le città</li>` +
+                   cittaUniche.map(c=>`<li data-value="${c}">${c}</li>`).join("");
+
+  function applicaFiltri(cittaSelezionata="") {
+    const testo = document.getElementById("filtro").value.toLowerCase();
+    const cittaFiltro = (cittaSelezionata || "").toLowerCase().trim();
+    document.querySelectorAll("#tabellaRistoranti tbody tr").forEach(tr=>{
+      const trCitta = (tr.dataset.citta||"").toLowerCase().trim();
+      const matchTesto = tr.textContent.toLowerCase().includes(testo);
+      const matchCitta = !cittaFiltro || trCitta === cittaFiltro;
+      tr.style.display = (matchTesto && matchCitta) ? "" : "none";
+    });
+  }
+
+  display.onclick = ()=>wrapper.classList.toggle("open");
+
+  list.querySelectorAll("li").forEach(li=>{
+    li.onclick = ()=>{
+      selectedSpan.textContent = li.textContent;
+      list.querySelectorAll("li").forEach(l=>l.classList.remove("selected"));
+      li.classList.add("selected");
+      wrapper.classList.remove("open");
+      applicaFiltri(li.dataset.value);
+    };
+  });
+
+  window.addEventListener("click", e=>{
+    if(!wrapper.contains(e.target)) wrapper.classList.remove("open");
+  });
+
+  // Filtro testo input
+  document.getElementById("filtro").addEventListener("input", ()=>{
+    const selectedCity = document.querySelector("#cityOptions li.selected")?.dataset.value || "";
+    applicaFiltri(selectedCity);
+  });
+
+  // Reset filtri
+  document.getElementById("resetFiltri").addEventListener("click", ()=>{
+    document.getElementById("filtro").value = "";
+    selectedSpan.textContent = "Tutte le città";
+    list.querySelectorAll("li").forEach(li=>li.classList.remove("selected"));
+    applicaFiltri("");
+  });
+
+  // --- Eventi popup dettagli/modifica/elimina ---
   document.querySelectorAll(".btnDettagli").forEach(btn=>{
     btn.addEventListener("click", e=>{
       const r = JSON.parse(e.currentTarget.dataset.info.replace(/&apos;/g,"'"));
       document.getElementById("titoloPopup").textContent = r["Nome"];
       document.getElementById("contenutoPopup").innerHTML = `
-        <div class="info-row"><strong>Zona:</strong>${r["Zona"]||"-"}</div>
-        <div class="info-row"><strong>Indirizzo:</strong>${r["Indirizzo"]||"-"}</div>
-        <div class="info-row"><strong>Cucina:</strong>${r["Cucina"]||"-"}</div>
-        <div class="info-row"><strong>Prezzo:</strong>${r["Prezzo"]||"-"}</div>
-        <div class="info-row"><strong>Tripadvisor:</strong>${r["Tripadvisor"]||"-"}</div>
-        <div class="info-row"><strong>Alessandro:</strong>${r["Alessandro"]||"-"}</div>
-        <div class="info-row"><strong>Francesca:</strong>${r["Francesca"]||"-"}</div>
-        <div class="info-row"><strong>Giacomo:</strong>${r["Giacomo"]||"-"}</div>
-        <div class="info-row"><strong>Lucia:</strong>${r["Lucia"]||"-"}</div>
-        <div class="info-row"><strong>Media:</strong>${r.media? r.media.toFixed(1):"-"}</div>
-        <hr>
-        <div class="info-row"><strong>Note:</strong><br>${(r["Note"]||"<em>Nessuna nota</em>").replace(/\n/g,"<br>")}</div>
+        <div class="popup-flex">
+          <div class="popup-left">
+            <div class="info-row"><strong>Zona:</strong>${r["Zona"]||"-"}</div>
+            <div class="info-row"><strong>Indirizzo:</strong>${r["Indirizzo"]||"-"}</div>
+            <div class="info-row"><strong>Città:</strong>${r.citta||"-"}</div>
+            <div class="info-row"><strong>Cucina:</strong>${r["Cucina"]||"-"}</div>
+            <div class="info-row"><strong>Prezzo:</strong>${r["Prezzo"]||"-"}</div>
+            <div class="info-row"><strong>Tripadvisor:</strong>${r["Tripadvisor"]||"-"}</div>
+          </div>
+          <div class="popup-right">
+            <div class="info-row"><strong>Alessandro:</strong>${r["Alessandro"]||"-"}</div>
+            <div class="info-row"><strong>Francesca:</strong>${r["Francesca"]||"-"}</div>
+            <div class="info-row"><strong>Giacomo:</strong>${r["Giacomo"]||"-"}</div>
+            <div class="info-row"><strong>Lucia:</strong>${r["Lucia"]||"-"}</div>
+            <div class="info-row"><strong>Media:</strong>${r.media? r.media.toFixed(1):"-"}</div>
+            <div class="info-row"><strong>Note:</strong><br>${(r["Note"]||"<em>Nessuna nota</em>").replace(/\n/g,"<br>")}</div>
+          </div>
+        </div>
       `;
       if(r["Indirizzo"]){
-        const query = encodeURIComponent("Milano, "+r["Indirizzo"]);
+        const query = encodeURIComponent(r["Indirizzo"]);
         document.getElementById("mappaPopup").innerHTML = `
           <div class="map-container">
             <iframe src="https://www.google.com/maps?q=${query}&output=embed" loading="lazy"></iframe>
@@ -223,32 +558,74 @@ async function caricaTabella(){
     });
   });
 
-  // Elimina ristorante
+  document.querySelectorAll(".btnModifica").forEach(btn=>{
+    btn.addEventListener("click", e=>{
+      const r = JSON.parse(e.currentTarget.dataset.info.replace(/&apos;/g,"'"));
+      apriPopupModifica(r);
+    });
+  });
+
+  async function apriPopupModifica(r) {
+    document.getElementById("titoloPopup").innerHTML = '<i class="fa-solid fa-wrench"></i> Modifica ' + r["Nome"];
+    const campiGenerali = ["Zona", "Indirizzo", "Cucina", "Prezzo", "Tripadvisor"];
+    const campiVoti = ["Alessandro", "Francesca", "Giacomo", "Lucia", "Note"];
+
+    document.getElementById("contenutoPopup").innerHTML = `
+      <div class="popup-flex">
+        <div class="popup-left">
+          ${campiGenerali.map(c=>{
+            const val = (r[c]||"").toString().replace(/"/g,"&quot;");
+            return `<div class="info-row"><strong>${c}:</strong><br><input type="${c==='Tripadvisor'?'number':'text'}" id="edit_${c}" value="${val}" ${c==='Tripadvisor'? 'step="0.1" min="0" max="10"':''}></div>`;
+          }).join("")}
+        </div>
+        <div class="popup-right">
+          ${campiVoti.map(c=>{
+            if(c==="Note"){
+              return `<div class="info-row"><strong>${c}:</strong><br><textarea id="edit_${c}" rows="6">${(r[c]||"").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</textarea></div>`;
+            } else {
+              const val = (r[c]||"").toString().replace(/"/g,"&quot;");
+              return `<div class="info-row"><strong>${c}:</strong><br><input type="number" id="edit_${c}" value="${val}" step="0.1" min="0" max="10"></div>`;
+            }
+          }).join("")}
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:20px;">
+        <button id="salvaModifiche" class="salvaModifiche"><i class="fa-solid fa-floppy-disk"></i> Salva modifiche</button>
+      </div>
+    `;
+    document.getElementById("salvaModifiche").onclick = async ()=>{
+      const payload = { nome: r["Nome"] };
+      [...campiGenerali, ...campiVoti].forEach(c=>{
+        const el = document.getElementById("edit_"+c);
+        if(el) payload[c.toLowerCase()===c?"note":c] = el.value;
+      });
+      const res = await fetch(scriptURL, { method:"POST", body: JSON.stringify(payload)});
+      const json = await res.json();
+      mostraNotifica("Modifica salvata!");
+      document.getElementById("popupDettagli").style.display="none";
+      caricaTabella();
+    };
+    document.getElementById("popupDettagli").style.display="flex";
+  }
+
+  // Chiudi popup
+  document.getElementById("chiudiPopup").onclick = ()=>{ document.getElementById("popupDettagli").style.display="none"; };
+
+  // Eliminazione
   document.querySelectorAll(".btnElimina").forEach(btn=>{
     btn.addEventListener("click", async e=>{
+      if(!confirm("Sei sicuro di voler eliminare questo ristorante?")) return;
       const nome = e.currentTarget.dataset.nome;
-      if(!confirm(`Vuoi davvero eliminare "${nome}"?`)) return;
-      await fetch(scriptURL,{
+      const res = await fetch(scriptURL, {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
         body: JSON.stringify({elimina:true,nome})
       });
+      const json = await res.json();
+      mostraNotifica("Ristorante eliminato!");
       caricaTabella();
     });
   });
 }
-
-// Popup close
-document.getElementById("chiudiPopup").addEventListener("click",()=>{document.getElementById("popupDettagli").style.display="none";});
-window.addEventListener("click",e=>{if(e.target.id==="popupDettagli") document.getElementById("popupDettagli").style.display="none";});
-
-// Filtro
-document.getElementById("filtro").addEventListener("input", e=>{
-  const filtro = e.target.value.toLowerCase();
-  document.querySelectorAll("#tabellaRistoranti tbody tr").forEach(tr=>{
-    tr.style.display = tr.textContent.toLowerCase().includes(filtro)?"":"none";
-  });
-});
 
 caricaTabella();
 </script>
