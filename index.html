@@ -5,115 +5,75 @@
   <title>Gestione Ristoranti</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/99b/ristoranti_db/main/images/7845744.png" sizes="96x96">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 40px auto;
-      background: #f8f9fa;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    input, select, textarea, button {
-      width: 100%;
-      margin: 8px 0;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-    input {
-      width: 96%;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 60px;
-      width: 96%;
-    }
-    button {
-      background-color: #3e4f47;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-    }
-    button:hover {
-      background-color: #658275;
-    }
-    h2 {
-      text-align: center;
-    }
-    #msg {
-      text-align: center;
-      font-weight: bold;
-      margin-top: 10px;
-      color: #3e4f47;
-    }
-    a {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      text-decoration: none;
-      color: #3e4f47;
-      font-weight: bold;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="stile_indice.css" />
 </head>
 <body>
-  <h2>Inserisci un Ristorante</h2>
-  
-  <form id="formRistorante">
-    <label for="nome">Nome</label>
-    <input list="nomiRistoranti" id="nome" placeholder="Scrivi o seleziona un nome" required>
-    <datalist id="nomiRistoranti"></datalist>
+  <div class="formnew">
+    <h2>Inserisci o Modifica un Ristorante</h2>
+    
+    <form id="formRistorante">
+      <label for="nome"><i class="fa-solid fa-shop"></i> Nome</label>
+      <input list="nomiRistoranti" id="nome" placeholder="Scrivi o seleziona un nome" required>
+      <datalist id="nomiRistoranti"></datalist>
 
-    <label>Indirizzo</label>
-    <input type="text" id="indirizzo">
+      <label><i class="fa-solid fa-location-dot"></i> Indirizzo</label>
+      <input type="text" id="indirizzo" placeholder="Inserisci l'indirizzo (es. Viale Romagna 20, Milano)">
 
-    <label>Zona</label>
-    <input type="text" id="zona">
+      <label><i class="fa-solid fa-map"></i> Zona</label>
+      <input type="text" id="zona" placeholder="Inserisci la zona (es. Piola)">
 
-    <label>Cucina</label>
-    <input type="text" id="cucina">
+      <label><i class="fa-solid fa-burger"></i> Cucina</label>
+      <input type="text" id="cucina" placeholder="Inserisci la tipologia di cucina">
 
-    <label>Prezzo</label>
-    <select id="prezzo">
-      <option value="">-- Seleziona --</option>
-      <option>Economico</option>
-      <option>Medio</option>
-      <option>Costoso</option>
-    </select>
+      <!-- PREZZO - CUSTOM SELECT CON ICONE -->
+      <label><i class="fa-solid fa-receipt"></i> Prezzo</label>
+      <div class="custom-select" id="customPrezzo">
+        <div class="selected">
+          <div class="selected-content">
+            <i class="fa-solid fa-coins"></i> Seleziona la fascia di prezzo a persona
+          </div>
+          <i class="fa-solid fa-chevron-down freccia"></i>
+        </div>
+        <ul class="select-options" id="priceOptions">
+          <li data-value=""><i class="fa-solid fa-question"></i> Non Conosciuto</li>
+          <li data-value="0 - 10 €"><i class="fa-solid fa-coins"></i> 0 - 10 €</li>
+          <li data-value="10 - 20 €"><i class="fa-solid fa-money-bill-1"></i> 10 - 20 €</li>
+          <li data-value="20 - 30 €"><i class="fa-solid fa-money-bill"></i> 20 - 30 €</li>
+          <li data-value="30 - 40 €"><i class="fa-solid fa-money-bills"></i> 30 - 40 €</li>
+          <li data-value="+ 40 €"><i class="fa-solid fa-sack-dollar"></i> + 40 €</li>
+        </ul>
+      </div>
+      <input type="hidden" id="prezzo" name="prezzo">
 
-    <label>Tripadvisor</label>
-    <input type="number" id="tripadvisor" min="1" max="5" step="0.01">
+      <label><i class="fa-solid fa-ranking-star"></i> Tripadvisor</label>
+      <input type="number" id="tripadvisor" min="1" max="5" step="0.01"placeholder="Es. 3.5">
 
-    <label>Voto Alessandro</label>
-    <input type="number" id="votoA" min="1" max="5" step="0.01">
+      <label><i class="fa-solid fa-star"></i> Alessandro</label>
+      <input type="number" id="votoA" min="1" max="5" step="0.01" placeholder="Inserisci un voto da 1 a 5 (es. 3.5)">
 
-    <label>Voto Francesca</label>
-    <input type="number" id="votoF" min="1" max="5" step="0.01">
+      <label><i class="fa-solid fa-star"></i> Francesca</label>
+      <input type="number" id="votoF" min="1" max="5" step="0.01" placeholder="Inserisci un voto da 1 a 5 (es. 3.5)">
 
-    <label>Voto Giacomo</label>
-    <input type="number" id="votoG" min="1" max="5" step="0.01">
+      <label><i class="fa-solid fa-star"></i> Giacomo</label>
+      <input type="number" id="votoG" min="1" max="5" step="0.01" placeholder="Inserisci un voto da 1 a 5 (es. 3.5)">
 
-    <label>Voto Lucia</label>
-    <input type="number" id="votoL" min="1" max="5" step="0.01">
+      <label><i class="fa-solid fa-star"></i> Lucia</label>
+      <input type="number" id="votoL" min="1" max="5" step="0.01" placeholder="Inserisci un voto da 1 a 5 (es. 3.5)">
 
-    <label>Note (aggiungi i tuoi commenti)</label>
-    <textarea id="note" placeholder="Scrivi eventuali note o commenti..."></textarea>
+      <label><i class="fa-solid fa-comments"></i> Note (aggiungi i tuoi commenti)</label>
+      <textarea id="note" placeholder="Scrivi eventuali note o commenti..."></textarea>
 
-    <button type="submit">
-      <i class="fa-solid fa-floppy-disk"></i> Salva / Aggiorna
-    </button>
-  </form>
+      <button type="submit">
+        <i class="fa-solid fa-floppy-disk"></i> Salva / Aggiorna
+      </button>
+    </form>
 
-  <p id="msg"></p>
+    <p id="msg"></p>
 
-  <a href="tabella.html">
-    <i class="fa-solid fa-list-ul"></i> Vai alla tabella ristoranti
-  </a>
+    <a href="tabella.html">
+      <i class="fa-solid fa-list-ul"></i> Vai alla tabella ristoranti
+    </a>
+  </div>
 
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbzuyvSKQkkOdyIXdxKIGxtCC7PEnOT9qwbi1CxCJYquPnQfwX-9Brs7tHzH2ccgnSh_gw/exec"; // 👈 sostituisci
@@ -174,11 +134,36 @@
     });
 
     caricaDati();
+    // --- Custom select Prezzo ---
+    const customSelect = document.getElementById("customPrezzo");
+    const selected = customSelect.querySelector(".selected");
+    const options = customSelect.querySelector(".select-options");
+    const hiddenInput = document.getElementById("prezzo");
+
+    // apri/chiudi menu
+    selected.addEventListener("click", () => {
+      customSelect.classList.toggle("open");
+    });
+
+    // seleziona un’opzione
+    options.addEventListener("click", e => {
+      const li = e.target.closest("li");
+      if (!li) return;
+      // aggiorna testo e input hidden
+      const selectedContent = selected.querySelector(".selected-content");
+      selectedContent.innerHTML = li.innerHTML;
+      hiddenInput.value = li.dataset.value;
+      
+      options.querySelectorAll("li").forEach(el => el.classList.remove("selected"));
+      li.classList.add("selected");
+      customSelect.classList.remove("open");
+    });
+
+    // chiudi cliccando fuori
+    document.addEventListener("click", e => {
+      if (!customSelect.contains(e.target)) customSelect.classList.remove("open");
+    });
+
   </script>
 </body>
 </html>
-
-
-
-
-

@@ -1,0 +1,179 @@
+html {
+    background: #b5c1b8;
+}
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 40px auto;
+    background: #f8f9fa;
+    padding: 20px 20px 20px 23px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.8);
+}
+button {
+    width: 99.7%;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #95ada2;
+    font-size: 14px;
+}
+input, select, textarea {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #95ada2;
+    font-size: 14px;
+}
+input {
+    width: 96%;
+}
+input:hover, select:hover, textarea:hover, button:hover {
+    border-color: #3e4f47;
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(62, 79, 71, 0.2);
+}
+textarea {
+    resize: vertical;
+    min-height: 60px;
+    width: 96%;
+}
+button {
+    background-color: #3e4f47;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+button:hover {
+    background-color: #658275;
+}
+h2 {
+    text-align: center;
+}
+#msg {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #3e4f47;
+}
+a {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #3e4f47;
+    font-weight: bold;
+}
+/* --- SELECT PERSONALIZZATO --- */
+.custom-select {
+    position: relative;
+    user-select: none;
+    background: white;
+    border: 1.5px solid #95ada2;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+div.custom-select {
+    margin: 8px 0;
+    width: 99.45%;
+    /* padding: 10px; */
+}
+
+.custom-select:hover {
+    border-color: #3e4f47;
+    box-shadow: 0 0 6px rgba(62, 79, 71, 0.2);
+}
+
+.custom-select .selected {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 10px;
+}
+
+.custom-select .selected-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: grey;
+}
+
+.custom-select .freccia {
+    color: #6c7c74;
+    transition: transform 0.3s ease;
+    font-size: 14px;
+}
+
+.custom-select.open .freccia {
+    transform: rotate(180deg);
+}
+
+.select-options {
+    display: none;
+    position: absolute;
+    top: 105%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1.5px solid #95ada2;
+    border-radius: 8px;
+    box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+    max-height: 240px;
+    overflow-y: auto;
+    z-index: 1000;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+}
+
+.custom-select.open .select-options {
+    display: block;
+}
+
+.select-options li {
+    padding: 10px 14px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.select-options li:hover {
+    background: #e9f0ec;
+}
+
+.select-options li i {
+    color: #3e4f47;
+}
+
+.select-options li.selected {
+    background: #95ada2;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* 👈 forzato per non mandare il testo a destra */
+    gap: 8px;
+}
+
+.select-options li.selected i {
+    color: white;
+}
+
+/* Forza tutte le icone a occupare lo stesso spazio */
+#priceOptions li i {
+    width: 20px;          /* fissa la larghezza */
+    text-align: center;   /* centra l’icona orizzontalmente */
+    margin-right: 8px;    /* spaziatura tra icona e testo */
+    color: #6c7c74;       /* colore uniforme */
+    flex-shrink: 0;       /* evita che l'icona venga ristretta */
+}
+
