@@ -29,7 +29,7 @@ input, select, textarea {
 input {
     width: 96%;
 }
-input:hover, select:hover, textarea:hover, button:hover {
+input:hover, select:hover, textarea:hover {
     border-color: #3e4f47;
     cursor: pointer;
     box-shadow: 0 0 6px rgba(62, 79, 71, 0.2);
@@ -40,15 +40,17 @@ textarea {
     width: 96%;
 }
 button {
-    background-color: #3e4f47;
-    color: white;
+    background-color: #b5c1b8;
+    color: black;
     border: none;
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
 }
 button:hover {
-    background-color: #658275;
+    background-color: #8e9891;
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(62, 79, 71, 0.2);
 }
 h2 {
     text-align: center;
@@ -67,6 +69,11 @@ a {
     color: #3e4f47;
     font-weight: bold;
 }
+
+a:hover {
+  text-shadow: 1px 1px 7px #788d83;
+}
+
 /* --- SELECT PERSONALIZZATO --- */
 .custom-select {
     position: relative;
